@@ -2,6 +2,10 @@
 import "./Register.css";
 import "../../App.css";
 import { Link } from "react-router-dom";
+import { useState } from "react";
+// import { ToastContainer, toast } from "react-toastify";
+import axios from "axios";
+import "react-toastify/dist/ReactToastify.css";
 
 // Importing assets
 import video from "../../LoginAssets/video.mp4";
@@ -12,8 +16,59 @@ import { FaUserShield } from "react-icons/fa";
 import { BsFillShieldLockFill } from "react-icons/bs";
 import { AiOutlineSwapRight } from "react-icons/ai";
 import { MdMarkEmailRead } from "react-icons/md";
+// import { response } from "express";
 
-const Register = () => {
+let Register = () => {
+  // setting state
+  const [formData, setFormData] = useState({
+    username: "",
+    email: "",
+    password: "",
+  });
+  const [registrationStatus, setRegistrationStatus] = useState(null);
+  // change handler in form
+  const handleInputChange = (event) => {
+    setFormData({
+      ...formData,
+      [event.target.name]: event.target.value,
+    });
+  };
+
+  //Successful Registration Toast
+  // const notify = () => toast("Registration Successful");
+
+  // submit handler
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    // try {
+    //   const data = await fetch("http://localhost:3001/api/register", {
+    //     method: "POST",
+    //     headers: {
+    //       "Content-Type": "application/json",
+    //     },
+    //     body: JSON.stringify(formData),
+    //   });
+    //   if (data.status == 500) {
+    //     setRegistrationStatus("error");
+    //     console.log("failure");
+    //   } else console.log("Save Successful");
+    //   setRegistrationStatus("success");
+    // } catch (error) {
+    //   console.log("Error");
+    // }
+
+    axios
+      .post("http://localhost:3001/api/register", formData)
+      .then((response) => {
+        setRegistrationStatus("success");
+        console.log("Response:", response.data);
+      })
+      .catch((error) => {
+        setRegistrationStatus("error");
+        console.error("Error:", error);
+      });
+  };
+
   return (
     <div className="registerPage flex">
       <div className="container flex">
@@ -39,14 +94,29 @@ const Register = () => {
             <h3>Welcome</h3>
           </div>
 
-          <form action="" className="form grid">
-            <span className="showMessage">Login Status will go here</span>
+          <form action="" className="form grid" onSubmit={handleSubmit}>
+            {registrationStatus === "success" && (
+              <span className="showSuccessMessage">
+                Registration Successful
+              </span>
+            )}
+
+            {registrationStatus === "error" && (
+              <span className="showErrorMessage">Registration Failed</span>
+            )}
 
             <div className="inputDiv">
               <label htmlFor="username">Email</label>
               <div className="input flex">
                 <MdMarkEmailRead className="icon" />
-                <input type="text" id="username" placeholder="Enter Email" />
+                <input
+                  type="text"
+                  id="email"
+                  name="email"
+                  value={formData.email}
+                  onChange={handleInputChange}
+                  placeholder="Enter Email"
+                />
               </div>
             </div>
 
@@ -54,7 +124,14 @@ const Register = () => {
               <label htmlFor="username">Username</label>
               <div className="input flex">
                 <FaUserShield className="icon" />
-                <input type="text" id="username" placeholder="Enter Username" />
+                <input
+                  type="text"
+                  id="username"
+                  name="username"
+                  value={formData.username}
+                  onChange={handleInputChange}
+                  placeholder="Enter Username"
+                />
               </div>
             </div>
 
@@ -65,6 +142,9 @@ const Register = () => {
                 <input
                   type="password"
                   id="password"
+                  name="password"
+                  value={formData.password}
+                  onChange={handleInputChange}
                   placeholder="Enter Password"
                 />
               </div>

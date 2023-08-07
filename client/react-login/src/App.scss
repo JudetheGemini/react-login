@@ -73,14 +73,21 @@ img, video {
     padding: 10px;
 }
 
-.showMessage {
+.showSuccessMessage {
+    display: block;
+    color: var(--whiteColor);
+    background: rgb(0, 232, 39);
+    border-radius: 3px;
+    text-align: center;
+}
+
+.showErrorMessage {
     display: block;
     color: var(--whiteColor);
     background: rgb(255,0,0);
     border-radius: 3px;
     text-align: center;
 }
-
 .btn {
     border: none;
     outline: none;
